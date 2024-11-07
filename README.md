@@ -26,6 +26,59 @@ n   Product         Theory (n^n/2)  Sum             Theory (asymp)
 
 #### cp.mint
 
+1. Main Organization:
+- Uses capital letters A-Z for functions
+- Variables a-z store values and array pointers
+- Uses APU-like commands (FSIN, FCOS, etc.) for floating point math
+- Arrays store points and distances
+- All FP results go into variables, never on stack
+- Stack only used for 16-bit integers
+
+2. Key Functions:
+- I: Initializes constants (pi, two, two_pi)
+- A: Creates arrays for x-coords, y-coords, distances
+- B: Calculates point positions on circle
+- D: Calculates distance between two points
+- L: Computes all distances between points
+- M: Multiplies all distances together 
+- U: Sums all distances
+- T: Calculates theoretical values
+- R: Prints results for one n
+- Y: Original output routine
+- Z: Table formatted output
+
+3. Program Flow:
+1. Initialize constants and arrays (I and A)
+2. For each n (3 to 10):
+   - Calculate n points on circle (B)
+   - Find all distances between points (L)
+   - Calculate product of distances (M)
+   - Calculate sum of distances (U)
+   - Calculate theoretical values (T)
+   - Display results (either Y or Z format)
+
+4. Key Calculations:
+- Points: Uses sin/cos to place points evenly on circle
+- Distances: Uses Pythagorean theorem between points
+- Products: Multiplies all distances together
+- Sums: Adds all distances
+- Theory: Calculates n^(n/2) and 2n²ln(n)/π
+
+5. Arrays Used:
+- x array: x-coordinates
+- y array: y-coordinates
+- d array: distances between points
+
+6. Memory Usage:
+- All values stored in variables
+- Temporary calculations use spare variables
+- Arrays sized for max 10 points
+- Distance array sized for 45 distances (max needed)
+
+7. Mathematical Properties Shown:
+- Product equals n^(n/2)
+- Sum approaches 2n²ln(n)/π
+- All distances are unit circle based
 
 
 
