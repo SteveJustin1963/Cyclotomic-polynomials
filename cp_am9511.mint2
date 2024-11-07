@@ -1,0 +1,96 @@
+// MINT3
+// [Rest of functions L,M,U,T,R,Y,Z remain similar but use F,G,W 
+// for APU operations instead of direct FP commands]
+
+
+
+// AM9511 Commands for port 0x81
+// FADD=0x10, FMUL=0x12, FDIV=0x13, SQRT=0x01
+// FSIN=0x08, FCOS=0x09, FLN=0x0B, FPWR=0x07
+// Write data to 0x80, command to 0x81, read from 0x80
+
+// Send float to APU (split into 4 bytes)
+:F n! 
+n #FF & #80 /O      // LSB
+n 8 } #FF & #80 /O  // byte 2
+n 16 } #FF & #80 /O // byte 3
+n 24 } #FF & #80 /O // MSB
+;
+
+// Read float from APU (combine 4 bytes)
+:G
+#80 /I n!           // get LSB
+#80 /I 8 { m!       // byte 2
+#80 /I 16 { o!      // byte 3
+#80 /I 24 { p!      // get MSB
+n m | o | p |       // combine all bytes
+;
+
+// Command APU and wait for done
+:W n!
+n #81 /O           // send command
+/( #81 /I 128 & ) ' // wait for done bit
+;
+
+// Constants in variables
+:I 
+3141592654 p! // PI (as integer bits)
+2000000000 t! // 2.0 (as integer bits)
+p F t F       // push PI and 2.0 to APU
+#12 W         // FMUL command
+G w!          // TWO_PI to w
+;
+
+// Arrays init
+:A 
+[0 0 0 0 0 0 0 0 0 0] x! // x coordinates
+[0 0 0 0 0 0 0 0 0 0] y! // y coordinates
+[0 0 0 0 0 0 0 0 0 0] d! // distances
+;
+
+// Calculate sin/cos for point (angle in a)
+:C
+a F             // push angle
+#08 W          // FSIN command
+G s!           // save sin
+a F             // push angle again
+#09 W          // FCOS command
+G c!           // save cos
+;
+
+// Store point n at angle a
+:P
+a C            // get sin/cos
+c n 2* x ?!    // store cos in x array
+s n 2* y ?!    // store sin in y array
+;
+
+// Calculate all points for n points
+:B n!
+n (            // loop n times
+    i n /      // i/n
+    w F        // push TWO_PI
+    #12 W      // FMUL
+    G a!       // save angle
+    i P        // store point
+)
+;
+
+// Distance between points i,j stored in r
+:D j! i! 
+i 2* x ? F j 2* x ? F  // push x coords
+#10 W                  // FSUB
+G F G F               // dup difference
+#12 W                 // FMUL for square
+G v!                  // save dx^2
+i 2* y ? F j 2* y ? F  // push y coords
+#10 W                  // FSUB
+G F G F               // dup difference
+#12 W                 // FMUL for square
+G u!                  // save dy^2
+v F u F              // push both squares
+#10 W                 // FADD
+#01 W                 // SQRT
+G r!                  // save result
+;
+
