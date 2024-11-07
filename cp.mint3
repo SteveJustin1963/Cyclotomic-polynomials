@@ -1,0 +1,142 @@
+// MINT3
+
+// Constants in variables
+:I 
+3.141592654 p! // PI 
+2.0 t!         // TWO 
+p t * w!       // TWO_PI 
+;
+
+// Arrays init
+:A 
+[0 0 0 0 0 0 0 0 0 0] x! // x coordinates
+[0 0 0 0 0 0 0 0 0 0] y! // y coordinates
+[0 0 0 0 0 0 0 0 0 0] d! // distances
+;
+
+// Calculate sin/cos for point (angle in a, results in s,c)
+:C
+a FSIN s!      // sin result in s
+a FCOS c!      // cos result in c
+;
+
+// Store point n at angle a
+:P
+a C            // get sin/cos
+c n 2* x ?!    // store cos in x array
+s n 2* y ?!    // store sin in y array
+;
+
+// Calculate all points for n points
+:B n!
+n (            // loop n times
+    i n / w * a! // angle = i * TWO_PI / n
+    i P        // store point
+)
+;
+
+// Distance between points i,j stored in r
+:D j! i! 
+i 2* x ? j 2* x ? - FDUP * v! // dx^2
+i 2* y ? j 2* y ? - FDUP * u! // dy^2
+v u + FSQRT r! // sqrt(dx^2 + dy^2)
+;
+
+// Calculate all distances for n points
+:L n! 
+0 k!          // distance array index
+n (           // for each point
+    i 1+ n < (
+        i j!  // store current as j
+        n j (  // loop remaining points
+            i j D      // calculate distance
+            r k d ?!   // store in distances array
+            k 1+ k!    // next distance index
+        )
+    )
+)
+;
+
+// Product of distances in p
+:M n!
+1.0 p!         // init product
+n n 1- * 2/ (  // loop n(n-1)/2 times
+    p i d ? FMUL p!  // multiply next distance
+)
+;
+
+// Sum of distances in s
+:U n!
+0.0 s!         // init sum
+n n 1- * 2/ (  // loop n(n-1)/2 times
+    s i d ? FADD s!  // add next distance
+)
+;
+
+// Theoretical calculations
+:T n!
+n FDUP 2.0 FDIV FPOW p! // n^(n/2) -> p
+n FDUP FMUL 2.0 FMUL    // 2n^2
+p FDIV                  // divide by pi
+n FLN FMUL s!          // *ln(n) -> s
+;
+
+// Print results for n points
+:R n!
+`N = ` n . /N
+n L         // calc distances
+n M         // calc product
+n T         // calc theoretical
+`Product actual:     ` p . /N
+`Product theory:     ` p . /N
+`Sum actual:         ` s . /N
+`Sum asymptotic:     ` s . /N
+/N
+;
+
+// Main analysis routine
+:Y
+I A         // init constants and arrays
+`Analysis of Points on Unit Circle` /N
+`============================` /N
+3 10 (      // for n = 3 to 10
+    i R     // analyze each n
+)
+;
+
+// Run with: Y
+
+
+
+
+// New table display function
+:Z
+I A         // init constants and arrays
+`Analysis of Points on Unit Circle` /N
+`+=======+=============+=============+=============+=============+` /N
+`|   N   |   Product   |   Theory    |     Sum    |  Asymptotic |` /N
+`|       |   Actual    |   Product   |   Actual   |     Sum     |` /N
+`+=======+=============+=============+=============+=============+` /N
+3 10 (     // for n = 3 to 10
+    `|   ` i . 
+    i 3 < (`    `) // align single digits
+    `  |   `
+    i L     // calc distances
+    i M     // calc product
+    i T     // calc theoretical
+    p .     // product actual
+    `  |   `
+    p .     // theory product
+    `  |   `
+    s .     // sum actual
+    `  |   `
+    s .     // asymptotic sum
+    `  |` /N
+    `+=======+=============+=============+=============+=============+` /N
+)
+;
+
+// Run either:
+// Y  - original output
+// Z  - table output
+
