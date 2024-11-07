@@ -24,7 +24,7 @@ n   Product         Theory (n^n/2)  Sum             Theory (asymp)
 
 ![image](https://github.com/user-attachments/assets/cad302f7-83d8-41b7-8800-cda86121da23)
 
-#### cp.mint
+#### cp.mint3
 
 1. Main Organization:
 - Uses capital letters A-Z for functions
@@ -82,6 +82,71 @@ n   Product         Theory (n^n/2)  Sum             Theory (asymp)
 
 #### cp_am9511.mint3
 
+Key changes from previous version:
+
+1. Added APU Interface Functions:
+   - F: Sends float to APU (port 0x80)
+   - G: Reads float from APU (port 0x80)
+   - W: Sends command and waits (port 0x81)
+
+2. APU Operation Flow:
+   - Write operands to port 0x80
+   - Send command to port 0x81
+   - Wait for done bit (bit 7 of port 0x81)
+   - Read result from port 0x80
+
+3. Data Handling:
+   - Float values stored as 32-bit integers
+   - Must be split into bytes for APU
+   - Results reassembled from bytes
+
+4. Port Usage:
+   - 0x80: Data port (read/write)
+   - 0x81: Command/status port
+
+5. Key Commands:
+   - 0x10: FADD
+   - 0x12: FMUL
+   - 0x13: FDIV
+   - 0x01: SQRT
+   - 0x08: FSIN
+   - 0x09: FCOS
+   - 0x0B: FLN
+   - 0x07: FPWR
+
+
+
+The Z function for printing remains the same because it's just displaying values - it uses the results we calculated using the APU but the display formatting is independent of how we got those results. The only difference is how we got the numbers (using APU at port 0x80), not how we display them.
+
+
+The Z function works with the APU version because:
+
+1. All results are still stored in our MINT variables:
+   - product in p
+   - sum in s
+   - intermediate values in other variables
+
+2. Z only needs to:
+   - Print the table borders with `
+   - Access variables with their letter names (p, s, etc)
+   - Print numbers with . 
+   - Print newlines with /N
+
+So you can still run either:
+```mint
+Y    // Original simple output
+```
+or
+```mint
+Z    // Pretty table output
++=======+=============+=============+=============+=============+
+|   N   |   Product   |   Theory    |     Sum    |  Asymptotic |
+|       |   Actual    |   Product   |   Actual   |     Sum     |
++=======+=============+=============+=============+=============+
+|   3   |     5.1962  |     5.1962  |     5.1962 |     6.2946 |
+[...etc...]
+```
+////////////
 
 
 
