@@ -1,5 +1,5 @@
 % https://www.mycompiler.io/new/octave
-
+% tested working ok
 
 function main()
     % Test different values of n
