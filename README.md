@@ -22,7 +22,11 @@ n   Product         Theory (n^n/2)  Sum             Theory (asymp)
 
 ```
 
-![image](https://github.com/user-attachments/assets/f60a05c3-15c7-4dc9-b721-053402a31f72)
+![image](https://github.com/user-attachments/assets/cad302f7-83d8-41b7-8800-cda86121da23)
+
+#### cp.mint
+
+
 
 
 
