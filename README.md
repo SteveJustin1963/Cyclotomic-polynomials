@@ -80,6 +80,8 @@ n   Product         Theory (n^n/2)  Sum             Theory (asymp)
 - Sum approaches 2n²ln(n)/π
 - All distances are unit circle based
 
+#### cp_am9511.mint3
+
 
 
 
